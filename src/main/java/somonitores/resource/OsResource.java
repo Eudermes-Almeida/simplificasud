@@ -323,6 +323,7 @@ public class OsResource {
     @Tag(name = "Atualiza status de uma ordem de serviço", description = "Atualiza apenas o status de uma ordem de serviço pelo código")
     public Response atualizarStatus(@QueryParam("os") Long os, @QueryParam("status") String status) {
         try {
+            System.out.println(" teste de log");
             // Verifica se os parâmetros foram passados corretamente
             if (os == null || status == null || status.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST)
