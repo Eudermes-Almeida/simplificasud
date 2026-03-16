@@ -69,7 +69,7 @@ public class RelatorioResource {
     @GET
     @Path("/osPorStatus")
     @Produces(MediaType.APPLICATION_JSON)
-    @Tag(name = "Busca Ordens de Serviço por status", description = "Busca Ordens de Serviço entre duas datas fornecidas.")
+    @Tag(name = "Busca Ordens de Serviço por status", description = "Busca Ordens de Serviço com um determinado status.")
     public Response buscarOsPorStatus(@QueryParam("status") String status) {
         try {
 
@@ -93,6 +93,76 @@ public class RelatorioResource {
         }
 
     }
+
+
+    @GET
+    @Path("/osPorStatusRemoto")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Busca Ordens de Serviço Remotas", description = "Busca Ordens de Serviço com status 'APROVADA REMOTA' ou 'REPROVADA REMOTA'.")
+    public Response buscarOsPorStatusRemoto() {
+        try {
+            List<OsDTO> osList = relatorioService.buscaOsPorStatusRemoto();
+
+            if (osList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Nenhuma ordem de serviço encontrada para os status 'APROVADA REMOTA' ou 'REPROVADA REMOTA'.")
+                        .build();
+            }
+
+            return Response.ok(osList).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Erro ao buscar ordens de serviço com status remoto: " + e.getMessage())
+                    .build();
+        }
+    }
+
+
+    @GET
+    @Path("/aprovacaoOnline")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Busca Ordens de Serviço por status", description = "Busca Ordens de Serviço com um determinado status.")
+    public Response aprovacaoOnline(
+            @QueryParam("status") String status,
+            @QueryParam("codcli") String codcli) {
+        try {
+            // Verifica se os parâmetros 'status' e 'codcli' são fornecidos
+            if (status == null || codcli == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Os parâmetros 'status' e 'codcli' são obrigatórios.")
+                        .build();
+            }
+
+            // Valida se 'codcli' é um número válido
+            Long codcliLong;
+            try {
+                codcliLong = Long.parseLong(codcli);
+            } catch (NumberFormatException e) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("O parâmetro 'codcli' deve ser um número válido.")
+                        .build();
+            }
+
+            // Busca as ordens de serviço pelo status e codcli
+            List<OsDTO> osList = relatorioService.buscaOsPorStatusECodcli(status, codcliLong);
+
+            // Verifica se a lista de ordens de serviço está vazia
+            if (osList.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Nenhuma ordem de serviço encontrada para o status e código cliente fornecidos.")
+                        .build();
+            }
+
+            // Retorna a lista de ordens de serviço encontradas
+            return Response.ok(osList).build();
+        } catch (Exception e) {
+            // Trata exceções inesperadas
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Erro ao buscar ordens de serviço: " + e.getMessage())
+                    .build();
+        }
+    }
+
 
     @GET
     @Path("/calculoComissaoTecnicos")
@@ -121,12 +191,13 @@ public class RelatorioResource {
             ComissaoDTO comissaoDTO = relatorioService.calculaComissaoTecnicos(dataInicioFormatada, dataFimFormatada, busca);
 
             // Verifica se o ComissaoDTO é nulo ou possui valores que indicam ausência de dados
-            if (comissaoDTO == null || comissaoDTO.getComissao().compareTo(BigDecimal.ZERO) == 0) {
+            if (comissaoDTO == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Nenhuma comissão calculada para o intervalo de datas fornecido.")
+                        .entity("Erro ao calcular comissão: Dados não encontrados para o intervalo de datas fornecido.")
                         .build();
             }
 
+            // Retorna a resposta com o DTO calculado
             return Response.ok(comissaoDTO).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -134,5 +205,6 @@ public class RelatorioResource {
                     .build();
         }
     }
+
 
 }

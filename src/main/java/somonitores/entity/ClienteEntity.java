@@ -11,7 +11,7 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Builder
-@Jacksonized
+//@Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClienteEntity {

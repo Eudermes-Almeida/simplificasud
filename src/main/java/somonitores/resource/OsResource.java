@@ -316,6 +316,40 @@ public class OsResource {
         }
     }
 
+    @PATCH
+    @Path("/status")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Atualiza status de uma ordem de serviço", description = "Atualiza apenas o status de uma ordem de serviço pelo código")
+    public Response atualizarStatus(@QueryParam("os") Long os, @QueryParam("status") String status) {
+        try {
+            // Verifica se os parâmetros foram passados corretamente
+            if (os == null || status == null || status.isEmpty()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Parâmetros 'os' e 'status' são obrigatórios")
+                        .build();
+            }
+
+            // Atualiza o status da ordem de serviço
+            OsEntity osAtualizada = osService.atualizarStatus(os, status);
+
+            // Retorna o objeto atualizado
+            return Response.ok(osAtualizada)
+                    .build();
+        } catch (Exception e) {
+            // Retorna erro apropriado
+            if (e.getMessage() != null && e.getMessage().contains("Ordem de serviço não encontrada")) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Ordem de serviço não encontrada com o código: " + os)
+                        .build();
+            }
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Erro ao atualizar status: " + e.getMessage())
+                    .build();
+        }
+    }
+
+
     @DELETE
     @Path("/os/{os}")
     @Produces(MediaType.APPLICATION_JSON)

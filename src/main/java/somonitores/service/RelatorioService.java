@@ -33,21 +33,21 @@ public class RelatorioService {
         if (busca.equals("faturamentoTotal")) {
             sql = "SELECT * FROM OS$ " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("faturamentoNobreak")) {
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("faturamentoManutencaoNobreak")) {
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " + "AND VENDA = 'NÃO' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("faturamentoManutencaoNobreakAbaixo3kva")) {
@@ -62,7 +62,7 @@ public class RelatorioService {
                     "OR MODELO = '2,4 KVA' OR MODELO = '3 KVA' OR MODELO = '3,2 KVA' " +
                     "OR MODELO = '3,5 KVA' OR MODELO = '3/4 HP' OR MODELO = '1/2 HP' " +
                     "OR MODELO = '3,200 KVA' OR MODELO = '600 KVA')" +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("faturamentoManutencaoNobreakAcima3kva")) {
@@ -74,7 +74,7 @@ public class RelatorioService {
                     "OR MODELO = '5 kVA' OR MODELO = '6 KVA' OR MODELO = '8 KVA' " +
                     "OR MODELO = '10 KVA' OR MODELO = '12 KVA' OR MODELO = '15 KVA' " +
                     "OR MODELO = '20 KVA' OR MODELO = '30 KVA')" +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("vendaNobreakNovo")) {
@@ -82,7 +82,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
                     "AND VENDA = 'NOVO' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("vendaNobreakSemiNovo")) {
@@ -90,7 +90,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
                     "AND VENDA = 'SEMI NOVO' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("nobreakInviavel")) {
@@ -98,7 +98,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
                     "AND TAREFA1 = 'INVIÁVEL' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("nobreakOrcamentoNaoAprovado")) {
@@ -106,7 +106,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
                     "AND TAREFA1 = 'ORC NAO APROVADO' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("nobreakGarantiaLoja")) {
@@ -114,7 +114,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
                     "AND GARANTIA = 'LOJA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("nobreakGarantiaFabrica")) {
@@ -122,7 +122,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
                     "AND GARANTIA = 'FABRICA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("vendaBateriaAvulsa")) {
@@ -132,7 +132,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'BATERIA' " +
                     "AND TAREFA1 = 'VENDA BATERIA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("vendaBateriaAvulsa")) {
@@ -140,7 +140,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     //"AND EQUIPAMENTO = 'BATERIA' " +
                     "AND TAREFA1 = 'VENDA BATERIA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("vendaSucataBateria")) {
@@ -148,21 +148,21 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     //"AND EQUIPAMENTO = 'BATERIA' " +
                     "AND TAREFA1 = 'VENDA SUCATA BATERIA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("faturamentoMonitor")) {
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'MONITOR' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("faturamentoManutencaoMonitor")) {
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
-                    "AND EQUIPAMENTO = 'MONITOR' " + "AND VENDA = 'NÃO' " +
-                    "ORDER BY fechamento ASC";
+                    "AND EQUIPAMENTO = 'MONITOR' " +
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("vendaMonitorSemiNovo")) {
@@ -170,7 +170,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'MONITOR' " +
                     "AND VENDA = 'SEMI NOVO' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("monitorInviavel")) {
@@ -178,7 +178,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'MONITOR' " +
                     "AND TAREFA1 = 'INVIÁVEL' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("monitorOrcamentoNaoAprovado")) {
@@ -186,7 +186,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'MONITOR' " +
                     "AND TAREFA1 = 'ORC NAO APROVADO' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("monitorGarantiaLoja")) {
@@ -194,26 +194,28 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'MONITOR' " +
                     "AND GARANTIA = 'LOJA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("faturamentoOutroEquipamento")) {
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
-                    "AND EQUIPAMENTO NOT IN ('MONITOR', 'NOBREAK', 'BATERIA', 'SUCATA BATERIA', 'BATERIAS USADAS'," +
-                    " 'BANCO BATERIAS', 'BANCO DE BATERIAS', 'MODULO BATERIA', 'MODULO DE BATERIA')";
-            //"ORDER BY fechamento ASC";
+                    "AND EQUIPAMENTO NOT IN ('MONITOR', 'NOBREAK', 'BATERIA', 'SUCATA BATERIA', 'BATERIAS USADAS', " +
+                    "'BANCO BATERIAS', 'BANCO DE BATERIAS', 'MODULO BATERIA', 'MODULO DE BATERIA') " +
+                    "ORDER BY fechamento DESC";
+
         }
 
         if (busca.equals("entradaEquipamento")) {
             sql = "SELECT * FROM OS$ o " +
-                    "WHERE data BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) ";
-
+                    "WHERE data BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+                    "ORDER BY o.os DESC";
         }
 
         if (busca.equals("orcamentoNoPeriodo")) {
             sql = "SELECT * FROM OS$ o " +
-                    "WHERE dataorca BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) ";
+                    "WHERE dataorca BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) "+
+                    "ORDER BY o.os DESC";
 
         }
 
@@ -229,7 +231,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND TECNICO = 'EUDERMES' " +
                     "AND STATUS = 'FECHADA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("tecnicoVinicius")) {
@@ -237,7 +239,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND TECNICO = 'VINÍCIUS' " +
                     "AND STATUS = 'FECHADA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("tecnicoLeonardo")) {
@@ -245,7 +247,7 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND TECNICO = 'LEONARDO' " +
                     "AND STATUS = 'FECHADA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
         }
 
         if (busca.equals("tecnicoRafael")) {
@@ -253,7 +255,15 @@ public class RelatorioService {
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND TECNICO = 'RAFAEL' " +
                     "AND STATUS = 'FECHADA' " +
-                    "ORDER BY fechamento ASC";
+                    "ORDER BY fechamento DESC";
+        }
+
+        if (busca.equals("tecnicoGabriel")) {
+            sql = "SELECT * FROM OS$ o " +
+                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+                    "AND TECNICO = 'GABRIEL' " +
+                    "AND STATUS = 'FECHADA' " +
+                    "ORDER BY fechamento DESC";
         }
 
         List<OsEntity> osEntities = entityManager.createNativeQuery(sql, OsEntity.class)
@@ -325,9 +335,20 @@ public class RelatorioService {
                     "ORDER BY OS DESC";
         }
 
+        if (status.equals("naoAprovadas")) {
+            sql = "SELECT * FROM OS$ " +
+                    "WHERE status = 'NÃO APROVADO'"  +
+                    "ORDER BY OS DESC";
+        }
         if (status.equals("baixadas")) {
             sql = "SELECT * FROM OS$ " +
                     "WHERE status = 'BAIXA'"  +
+                    "ORDER BY OS DESC";
+        }
+
+        if (status.equals("pronta")) {
+            sql = "SELECT * FROM OS$ " +
+                    "WHERE status = 'PRONTO'"  +
                     "ORDER BY OS DESC";
         }
 
@@ -399,11 +420,98 @@ public class RelatorioService {
     }
 
     @Transactional
-    public ComissaoDTO  calculaComissaoTecnicos(String dataInicioString, String dataFimString, String busca) {
-//        if (dataInicioString == null || dataFimString == null || dataInicioString.isEmpty() || dataFimString.isEmpty()) {
-//            return Collections.emptyList();
-//        }
+    public List<OsDTO> buscaOsPorStatusECodcli(String status, Long codcli) {
+        if (status == null || codcli == null) {
+            return Collections.emptyList();
+        }
 
+        String sql = null;
+
+       if (status.equals("aguardandoAprovacao")) {
+            sql = "SELECT * FROM OS$ WHERE status = 'AGUARDANDO APROV' AND codcli = :codcli ORDER BY OS DESC";
+        }
+
+        // Executando a consulta com parâmetro codcli
+        List<OsEntity> osEntities = entityManager.createNativeQuery(sql, OsEntity.class)
+                .setParameter("codcli", codcli)  // Passando o parâmetro codcli
+                .getResultList();
+
+        // Somando os valores da coluna TOTALIQ
+        BigDecimal totalIQ = osEntities.stream()
+                .filter(Objects::nonNull)
+                .map(osEntity -> {
+                    String totalIQString = osEntity.getTotaliq();
+                    if (totalIQString != null) {
+                        totalIQString = totalIQString.trim().replace(",", ".");
+                        try {
+                            return new BigDecimal(totalIQString);
+                        } catch (NumberFormatException e) {
+                            return BigDecimal.ZERO;
+                        }
+                    }
+                    return BigDecimal.ZERO;
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Quantidade de ordens de serviço
+        int qtOs = osEntities.size();
+
+        // Mapeando as entidades para DTO e incluindo totalIQSum
+        List<OsDTO> osDTOs = osEntities.stream()
+                .filter(Objects::nonNull)
+                .map(entity -> mapToDTO(entity, totalIQ, qtOs))
+                .collect(Collectors.toList());
+
+        return osDTOs;
+    }
+
+    @Transactional
+    public List<OsDTO> buscaOsPorStatusRemoto() {
+        String sql = "SELECT * FROM OS$ WHERE STATUS = 'REPROVADA REMOTA' OR STATUS = 'APROVADA REMOTA' ORDER BY OS DESC";
+
+        // Executando a consulta para buscar as entidades
+        List<OsEntity> osEntities = entityManager.createNativeQuery(sql, OsEntity.class)
+                .getResultList();
+
+        // Caso nenhuma ordem de serviço seja encontrada
+        if (osEntities.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Quantidade de ordens de serviço
+        int qtOs = osEntities.size();
+
+        // Somando os valores da coluna TOTALIQ
+        BigDecimal totalIQ = osEntities.stream()
+                .filter(Objects::nonNull)
+                .map(osEntity -> {
+                    String totalIQString = osEntity.getTotaliq();
+                    if (totalIQString != null) {
+                        totalIQString = totalIQString.trim().replace(",", ".");
+                        try {
+                            return new BigDecimal(totalIQString);
+                        } catch (NumberFormatException e) {
+                            return BigDecimal.ZERO;
+                        }
+                    }
+                    return BigDecimal.ZERO;
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Mapeando as entidades para DTOs e incluindo totalIQSum
+        List<OsDTO> osDTOs = osEntities.stream()
+                .filter(Objects::nonNull)
+                .map(entity -> mapToDTO(entity, totalIQ, qtOs))
+                .collect(Collectors.toList());
+
+        return osDTOs;
+    }
+
+
+
+
+    @Transactional
+    public ComissaoDTO calculaComissaoTecnicos(String dataInicioString, String dataFimString, String busca) {
         String sql = null;
 
         if (busca.equals("comissaoTecnicos")) {
@@ -447,51 +555,42 @@ public class RelatorioService {
                 .collect(Collectors.toList());
 
         // BUSCA O VALOR DO FATURAMENTO TOTAL //////////////////////////////////
-       BigDecimal faturamentoTotal = osDTOs.get(0).getSomatoriaDTO().getSomatotaliq();
+        BigDecimal faturamentoTotal = osDTOs.isEmpty() ? BigDecimal.ZERO : osDTOs.get(0).getSomatoriaDTO().getSomatotaliq();
 
         System.out.println("***************** faturamento total *********************** " + faturamentoTotal);
 
         // BUSCA VALOR DE VENDA DE NOBREAK NOVO ////////////////////////////
-         busca ="vendaNobreakNovo";
+        busca ="vendaNobreakNovo";
 
-        BigDecimal valorVendaNobreak;
+        BigDecimal valorVendaNobreak = BigDecimal.ZERO;
         try {
             List<OsDTO> vendaNobreakNovo = faturamentoEmIntervalo(dataInicioString, dataFimString, busca);
 
-            // Verifica se a lista não está vazia antes de acessar o primeiro elemento
             if (!vendaNobreakNovo.isEmpty()) {
                 valorVendaNobreak = vendaNobreakNovo.get(0).getSomatoriaDTO().getSomatotaliq();
-            } else {
-                valorVendaNobreak = BigDecimal.ZERO; // Atribui zero se a lista estiver vazia
             }
         } catch (Exception e) {
-             valorVendaNobreak = BigDecimal.ZERO; // Atribui zero em caso de erro
+            valorVendaNobreak = BigDecimal.ZERO;
         }
         System.out.println("****************valor venda nobreak novo******* " + valorVendaNobreak);
 
-
         // BUSCA VALOR DE VENDA DE BATERIAS AVULSAS ////////////////////////////
-                busca ="vendaBateriaAvulsa";
+        busca ="vendaBateriaAvulsa";
 
-        BigDecimal valorVendaBateria;
+        BigDecimal valorVendaBateria = BigDecimal.ZERO;
         try {
             List<OsDTO> vendaBateria = faturamentoEmIntervalo(dataInicioString, dataFimString, busca);
 
-            // Verifica se a lista não está vazia antes de acessar o primeiro elemento
             if (!vendaBateria.isEmpty()) {
                 valorVendaBateria = vendaBateria.get(0).getSomatoriaDTO().getSomatotaliq();
-            } else {
-                valorVendaBateria = BigDecimal.ZERO; // Atribui zero se a lista estiver vazia
             }
         } catch (Exception e) {
-            valorVendaBateria = BigDecimal.ZERO; // Atribui zero em caso de erro
+            valorVendaBateria = BigDecimal.ZERO;
         }
         System.out.println("****************valor venda Bateria Avulsa******* " + valorVendaBateria);
 
-        /////CALCULO PERCENTUAL COMISSÃO//////////////
-
+        // CALCULO PERCENTUAL COMISSÃO
         BigDecimal percentual;
-
         if (faturamentoTotal.compareTo(new BigDecimal("40000")) < 0) {
             percentual = BigDecimal.ZERO; // Se faturamentoTotal for menor que 40000
         } else if (faturamentoTotal.compareTo(new BigDecimal("50000")) < 0) {
@@ -499,7 +598,6 @@ public class RelatorioService {
         } else {
             percentual = new BigDecimal("0.01"); // Se faturamentoTotal for maior que 50000
         }
-
 
         System.out.println("***********percentual de comissão ********" + percentual);
 
@@ -509,7 +607,6 @@ public class RelatorioService {
         System.out.println("*********valor comissional " + valorComissional);
 
         // CALCULO DA COMISSÃO INDIVIDUAL:
-        //BigDecimal comissaoIndividual = valorComissional.multiply(percentual);
         BigDecimal comissaoIndividual = valorComissional.multiply(percentual).setScale(2, RoundingMode.HALF_UP);
 
         System.out.println("***************COMISSAO IND " + comissaoIndividual);
@@ -520,6 +617,7 @@ public class RelatorioService {
                 .percentual(percentual)
                 .build();
     }
+
 
 
     private OsDTO mapToDTO(OsEntity entity, BigDecimal totalIQ, int qtOs) {

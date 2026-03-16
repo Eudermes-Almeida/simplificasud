@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Builder
-@Jacksonized
+//@Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
 public class OsEntity {

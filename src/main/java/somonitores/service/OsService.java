@@ -13,6 +13,7 @@ import somonitores.entity.OsEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +46,7 @@ public class OsService {
             return Collections.emptyList();
         }
 
-        String query = "SELECT obj FROM OsEntity obj WHERE obj.codcli = :codcli";
+        String query = "SELECT obj FROM OsEntity obj WHERE obj.codcli = :codcli ORDER BY obj.os DESC";
         List<OsEntity> osEntities = entityManager.createQuery(query, OsEntity.class)
                 .setParameter("codcli", codcli)
                 .getResultList();
@@ -59,7 +60,9 @@ public class OsService {
     public List<OsDTO> buscarOsPorRazaoSocial(String rzsocial) {
         // Criação da consulta JPQL
         String jpql = "SELECT obj FROM OsEntity obj " +
-                "WHERE UPPER(obj.rzsocial) LIKE UPPER(CONCAT('%', :rzsocial, '%'))";
+                "WHERE UPPER(obj.rzsocial) LIKE UPPER(CONCAT('%', :rzsocial, '%')) " +
+                "ORDER BY obj.os DESC";
+
 
         TypedQuery<OsEntity> query = entityManager.createQuery(jpql, OsEntity.class);
         query.setParameter("rzsocial", rzsocial);
@@ -76,7 +79,9 @@ public class OsService {
     public List<OsDTO> buscarOsPorNomeFantasia(String fantasia) {
         // Criação da consulta JPQL
         String jpql = "SELECT obj FROM OsEntity obj " +
-                "WHERE UPPER(obj.fantasia) LIKE UPPER(CONCAT('%', :fantasia, '%'))";
+                "WHERE UPPER(obj.fantasia) LIKE UPPER(CONCAT('%', :fantasia, '%')) " +
+                "ORDER BY obj.os DESC";
+
 
         TypedQuery<OsEntity> query = entityManager.createQuery(jpql, OsEntity.class);
         query.setParameter("fantasia", fantasia);
@@ -112,7 +117,8 @@ public class OsService {
         String dataConsulta = data.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         // Consulta nativa SQL para buscar as ordens de serviço pela data
-        String sql = "SELECT * FROM OS$ WHERE CONVERT(DATE, data, 103) = ?";
+        String sql = "SELECT * FROM OS$ WHERE CONVERT(DATE, data, 103) = ? ORDER BY os DESC";
+
         List<OsEntity> osEntities = entityManager.createNativeQuery(sql, OsEntity.class)
                 .setParameter(1, dataConsulta)
                 .getResultList();
@@ -146,7 +152,8 @@ public class OsService {
         String dataConsulta = data.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         // Consulta nativa SQL para buscar as ordens de serviço pela data
-        String sql = "SELECT * FROM OS$ WHERE CONVERT(DATE, fechamento, 103) = ?";
+        String sql = "SELECT * FROM OS$ WHERE CONVERT(DATE, fechamento, 103) = ? ORDER BY os DESC";
+
         List<OsEntity> osEntities = entityManager.createNativeQuery(sql, OsEntity.class)
                 .setParameter(1, dataConsulta)
                 .getResultList();
@@ -160,12 +167,12 @@ public class OsService {
     @Transactional
     public List<OsDTO> buscarUltimasOs(int limite) {
 
-        if (limite <= 0 || limite > 1000) {
+        if (limite <= 0 || limite >= 1000) {
             return Collections.emptyList();
         }
 
         try {
-            String query = "SELECT obj FROM OsEntity obj ORDER BY obj.codcli DESC";
+            String query = "SELECT obj FROM OsEntity obj ORDER BY obj.os DESC";
             List<OsEntity> osEntities = entityManager.createQuery(query, OsEntity.class)
                     .setMaxResults(limite) // Define o limite diretamente na consulta
                     .getResultList();
@@ -189,7 +196,9 @@ public class OsService {
     public List<OsDTO> buscarOsPorSerial(String serial) {
         // Criação da consulta JPQL
         String jpql = "SELECT obj FROM OsEntity obj " +
-                "WHERE UPPER(obj.serial) LIKE UPPER(CONCAT('%', :serial, '%'))";
+                "WHERE UPPER(obj.serial) LIKE UPPER(CONCAT('%', :serial, '%')) " +
+                "ORDER BY obj.os DESC";
+
 
         TypedQuery<OsEntity> query = entityManager.createQuery(jpql, OsEntity.class);
         query.setParameter("serial", serial);
@@ -290,6 +299,27 @@ public class OsService {
     }
 
     @Transactional
+    public OsEntity atualizarStatus(Long os, String status) throws Exception {
+        if (os == null || status == null || status.isEmpty()) {
+            throw new IllegalArgumentException("Código da ordem de serviço e status não podem ser nulos ou vazios");
+        }
+
+        // Busca a ordem de serviço pelo ID
+        OsEntity osExistente = entityManager.find(OsEntity.class, os);
+        if (osExistente == null) {
+            throw new Exception("Ordem de serviço não encontrada com o código: " + os);
+        }
+
+        // Atualiza apenas o status
+        osExistente.setStatus(status);
+
+        // O EntityManager automaticamente atualiza a entidade existente no banco
+        return osExistente;
+    }
+
+
+
+    @Transactional
     public void deletarOs(Long os) throws Exception {
         if (os == null) {
             throw new IllegalArgumentException("Numero da OS não pode ser nulo");
@@ -308,7 +338,7 @@ public class OsService {
     private OsDTO mapToDTO(OsEntity entity) {
         return OsDTO.builder()
                 .os(entity.getOs())
-                .data(entity.getData())
+                .data(entity.getData())  // Converte LocalDateTime para OffsetDateTime
                 .hora(entity.getHora())
                 .fantasia(entity.getFantasia())
                 .rzsocial(entity.getRzsocial())
