@@ -419,6 +419,33 @@ public class RelatorioService {
 
     }
 
+    public SomatoriaDTO buscarSomatoriaFaturamento(String dataInicioString, String dataFimString) {
+        // SQL focado em performance: soma e conta direto no banco
+        String sql = "SELECT SUM(CAST(REPLACE(REPLACE(TOTALIQ, '.', ''), ',', '.') AS DECIMAL(18,2))), " +
+                "COUNT(*) FROM OS$ " +
+                "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120)";
+
+        // O getSingleResult retorna um Object[] quando há múltiplas colunas no SELECT
+        Object[] result = (Object[]) entityManager.createNativeQuery(sql)
+                .setParameter(1, dataInicioString)
+                .setParameter(2, dataFimString)
+                .getSingleResult();
+
+        SomatoriaDTO dto = new SomatoriaDTO();
+
+        if (result != null) {
+            // result[0] é o SUM, result[1] é o COUNT
+            dto.setSomatotaliq(result[0] != null ? new BigDecimal(result[0].toString()) : BigDecimal.ZERO);
+            dto.setQtOs(result[1] != null ? ((Number) result[1]).intValue() : 0);
+        } else {
+            dto.setSomatotaliq(BigDecimal.ZERO);
+            dto.setQtOs(0);
+        }
+
+        return dto;
+    }
+
+
     @Transactional
     public List<OsDTO> buscaOsPorStatusECodcli(String status, Long codcli) {
         if (status == null || codcli == null) {

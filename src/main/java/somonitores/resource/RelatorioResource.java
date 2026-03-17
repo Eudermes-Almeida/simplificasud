@@ -6,6 +6,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import somonitores.dto.ComissaoDTO;
+import somonitores.dto.SomatoriaDTO;
 import somonitores.service.RelatorioService;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -65,6 +66,36 @@ public class RelatorioResource {
         }
 
     }
+
+    @GET
+    @Path("/somatoriaFaturamento")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Tag(name = "Somatória de Faturamento", description = "Retorna apenas o valor total e quantidade de OS.")
+    public Response buscarSomatoria(@QueryParam("dataInicio") String dataInicioString,
+                                    @QueryParam("dataFim") String dataFimString)
+                                     {
+        try {
+            // ... (Mantenha aqui a sua lógica de validação e formatação de datas) ...
+            // Verifica se as datas têm o comprimento correto
+            if (dataInicioString.length() != 8 || dataFimString.length() != 8) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Formato de data inválido. Use o formato: ddMMyyyy.")
+                        .build();
+            }
+
+            String dataInicioFormatada = dataInicioString.substring(4, 8) + "-" + dataInicioString.substring(2, 4) + "-" + dataInicioString.substring(0, 2) + " 00:00:00";
+            String dataFimFormatada = dataFimString.substring(4, 8) + "-" + dataFimString.substring(2, 4) + "-" + dataFimString.substring(0, 2) + " 23:59:59";
+
+            SomatoriaDTO somatoria = relatorioService.buscarSomatoriaFaturamento(dataInicioFormatada, dataFimFormatada);
+
+            return Response.ok(somatoria).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Erro ao calcular somatória: " + e.getMessage())
+                    .build();
+        }
+    }
+
 
     @GET
     @Path("/osPorStatus")
