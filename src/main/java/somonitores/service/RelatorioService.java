@@ -85,30 +85,30 @@ public class RelatorioService {
             sql = "SELECT * FROM OS$ " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
-                    "AND ( " +
-                    "   MODELO LIKE '%500 VA%' OR MODELO LIKE '%600 VA%' OR MODELO LIKE '%700 VA%' " +
-                    "   OR MODELO LIKE '%800 VA%' OR MODELO LIKE '%1 KVA%' OR MODELO LIKE '%1,2 KVA%' " +
-                    "   OR MODELO LIKE '%1.2 KVA%' OR MODELO LIKE '%1,3 KVA%' OR MODELO LIKE '%1200 VA%' " +
-                    "   OR MODELO LIKE '%1,4 KVA%' OR MODELO LIKE '%1,5 KVA%' OR MODELO LIKE '%1,8 KVA%' " +
-                    "   OR MODELO LIKE '%2 KVA%' OR MODELO LIKE '%2,2 KVA%' OR MODELO LIKE '%2,4 KVA%' " +
-                    "   OR MODELO LIKE '%3 KVA%' OR MODELO LIKE '%3,2 KVA%' OR MODELO LIKE '%3,5 KVA%' " +
-                    "   OR MODELO LIKE '%3/4 HP%' OR MODELO LIKE '%1/2 HP%' OR MODELO LIKE '%3,200 KVA%' " +
-                    "   OR MODELO LIKE '%600 KVA%' " +
+                    "AND STATUS = 'FECHADA' " +
+                    "AND MODELO IN (" +
+                    "  '500 VA', '600 VA', '600', '700 VA', '800 VA', '1 KVA', '1,0 KVA', '1,2 KVA', " +
+                    "  '1.2 KVA', '1,3 KVA', '1200 VA', '1,4 KVA', '1.4 KVA', '1,5 KVA', '1,8 KVA', " +
+                    "  '2 KVA', '2,2 KVA', '2,4 KVA', '3 KVA', '3,2 KVA', '3,5 KVA', " +
+                    "  '3/4 HP', '1/2 HP', '3,200 KVA', '600 KVA'" +
                     ") " +
                     "ORDER BY fechamento DESC";
+
 
         }
 
         if (busca.equals("faturamentoManutencaoNobreakAcima3kva")) {
-            sql = "SELECT * FROM OS$ o " +
+            sql = "SELECT * FROM OS$ " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
-                    "AND VENDA = 'NÃO' " +
-                    "AND (MODELO = '4 kVA' " +
-                    "OR MODELO = '5 kVA' OR MODELO = '6 KVA' OR MODELO = '8 KVA' " +
-                    "OR MODELO = '10 KVA' OR MODELO = '12 KVA' OR MODELO = '15 KVA' " +
-                    "OR MODELO = '20 KVA' OR MODELO = '30 KVA')" +
+                    "AND STATUS = 'FECHADA' " +
+                    "AND MODELO IN (" +
+                    "  '4 kVA', '5 kVA', '6 KVA', '8 KVA', '10 KVA', " +
+                    "  '12 KVA', '15 KVA', '20 KVA', '30 KVA'" +
+                    ") " +
                     "ORDER BY fechamento DESC";
+
+
         }
 
         if (busca.equals("vendaNobreakNovo")) {
