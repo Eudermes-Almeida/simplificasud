@@ -31,38 +31,72 @@ public class RelatorioService {
         String sql = null;
 
         if (busca.equals("faturamentoTotal")) {
+//            sql = "SELECT * FROM OS$ " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "ORDER BY fechamento DESC";
             sql = "SELECT * FROM OS$ " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+                    "AND STATUS = 'FECHADA' " +
                     "ORDER BY fechamento DESC";
+
         }
 
         if (busca.equals("faturamentoNobreak")) {
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "AND EQUIPAMENTO = 'NOBREAK' " +
+//                    "ORDER BY fechamento DESC";
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
+                    "AND STATUS = 'FECHADA' " +
                     "ORDER BY fechamento DESC";
+
         }
 
         if (busca.equals("faturamentoManutencaoNobreak")) {
-            sql = "SELECT * FROM OS$ o " +
-                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
-                    "AND EQUIPAMENTO = 'NOBREAK' " + "AND VENDA = 'NÃO' " +
-                    "ORDER BY fechamento DESC";
-        }
-
-        if (busca.equals("faturamentoManutencaoNobreakAbaixo3kva")) {
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "AND EQUIPAMENTO = 'NOBREAK' " + "AND VENDA = 'NÃO' " +
+//                    "ORDER BY fechamento DESC";
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'NOBREAK' " +
                     "AND VENDA = 'NÃO' " +
-                    "AND (MODELO = '500 VA' OR MODELO = '600 VA' OR MODELO = '700 VA' " +
-                    "OR MODELO = '800 VA' OR MODELO = '1 KVA' OR MODELO = '1,2 KVA' " +
-                    "OR MODELO = '1,3 KVA' OR MODELO = '1,4 KVA' OR MODELO = '1,5 KVA' " +
-                    "OR MODELO = '1,8 KVA' OR MODELO = '2 KVA' OR MODELO = '2,2 KVA' " +
-                    "OR MODELO = '2,4 KVA' OR MODELO = '3 KVA' OR MODELO = '3,2 KVA' " +
-                    "OR MODELO = '3,5 KVA' OR MODELO = '3/4 HP' OR MODELO = '1/2 HP' " +
-                    "OR MODELO = '3,200 KVA' OR MODELO = '600 KVA')" +
+                    "AND STATUS = 'FECHADA' " +
                     "ORDER BY fechamento DESC";
+
+        }
+
+        if (busca.equals("faturamentoManutencaoNobreakAbaixo3kva")) {
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "AND EQUIPAMENTO = 'NOBREAK' " +
+//                    "AND VENDA = 'NÃO' " +
+//                    "AND (MODELO = '500 VA' OR MODELO = '600 VA' OR MODELO = '700 VA' " +
+//                    "OR MODELO = '800 VA' OR MODELO = '1 KVA' OR MODELO = '1,2 KVA' " +
+//                    "OR MODELO = '1,3 KVA' OR MODELO = '1200 VA' OR MODELO = '1,4 KVA' OR MODELO = '1,5 KVA' " +
+//                    "OR MODELO = '1,8 KVA' OR MODELO = '2 KVA' OR MODELO = '2,2 KVA' " +
+//                    "OR MODELO = '2,4 KVA' OR MODELO = '3 KVA' OR MODELO = '3,2 KVA' " +
+//                    "OR MODELO = '3,5 KVA' OR MODELO = '3/4 HP' OR MODELO = '1/2 HP' " +
+//                    "OR MODELO = '3,200 KVA' OR MODELO = '600 KVA')" +
+//                    "ORDER BY fechamento DESC";
+
+            sql = "SELECT * FROM OS$ " +
+                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+                    "AND EQUIPAMENTO = 'NOBREAK' " +
+                    "AND ( " +
+                    "   MODELO LIKE '%500 VA%' OR MODELO LIKE '%600 VA%' OR MODELO LIKE '%700 VA%' " +
+                    "   OR MODELO LIKE '%800 VA%' OR MODELO LIKE '%1 KVA%' OR MODELO LIKE '%1,2 KVA%' " +
+                    "   OR MODELO LIKE '%1.2 KVA%' OR MODELO LIKE '%1,3 KVA%' OR MODELO LIKE '%1200 VA%' " +
+                    "   OR MODELO LIKE '%1,4 KVA%' OR MODELO LIKE '%1,5 KVA%' OR MODELO LIKE '%1,8 KVA%' " +
+                    "   OR MODELO LIKE '%2 KVA%' OR MODELO LIKE '%2,2 KVA%' OR MODELO LIKE '%2,4 KVA%' " +
+                    "   OR MODELO LIKE '%3 KVA%' OR MODELO LIKE '%3,2 KVA%' OR MODELO LIKE '%3,5 KVA%' " +
+                    "   OR MODELO LIKE '%3/4 HP%' OR MODELO LIKE '%1/2 HP%' OR MODELO LIKE '%3,200 KVA%' " +
+                    "   OR MODELO LIKE '%600 KVA%' " +
+                    ") " +
+                    "ORDER BY fechamento DESC";
+
         }
 
         if (busca.equals("faturamentoManutencaoNobreakAcima3kva")) {
@@ -125,37 +159,68 @@ public class RelatorioService {
                     "ORDER BY fechamento DESC";
         }
 
-        if (busca.equals("vendaBateriaAvulsa")) {
+//        if (busca.equals("vendaBateriaAvulsa")) {
+//
+//            System.out.println("*********************entrou no if venda bateria avulsa**************");
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "AND EQUIPAMENTO = 'BATERIA' " +
+//                    "AND (TAREFA1 = 'VENDA BATERIA' OR DEFEITO1 = 'VENDA BATERIA') " +
+//                    "ORDER BY fechamento DESC";
+//
+//        }
 
+        if (busca.equals("vendaBateriaAvulsa")) {
             System.out.println("*********************entrou no if venda bateria avulsa**************");
+
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "AND EQUIPAMENTO LIKE '%BATERIA%' " + // Busca flexível para Equipamento
+//                    "AND (TAREFA1 LIKE '%VENDA BATERIA%' OR DEFEITO1 LIKE '%VENDA BATERIA%') " + // Busca em ambos os campos
+//                    "ORDER BY fechamento DESC";
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
-                    "AND EQUIPAMENTO = 'BATERIA' " +
-                    "AND TAREFA1 = 'VENDA BATERIA' " +
+                    "AND STATUS = 'FECHADA' " +
+                    "AND EQUIPAMENTO LIKE '%BATERIA%' " +
+                    "AND (TAREFA1 LIKE '%VENDA BATERIA%' OR DEFEITO1 LIKE '%VENDA BATERIA%') " +
                     "ORDER BY fechamento DESC";
+
         }
 
-        if (busca.equals("vendaBateriaAvulsa")) {
-            sql = "SELECT * FROM OS$ o " +
-                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
-                    //"AND EQUIPAMENTO = 'BATERIA' " +
-                    "AND TAREFA1 = 'VENDA BATERIA' " +
-                    "ORDER BY fechamento DESC";
-        }
+
+
+//        if (busca.equals("vendaBateriaAvulsa")) {
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    //"AND EQUIPAMENTO = 'BATERIA' " +
+//                    "AND TAREFA1 = 'VENDA BATERIA' " +
+//                    "ORDER BY fechamento DESC";
+//        }
 
         if (busca.equals("vendaSucataBateria")) {
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "AND TAREFA1 = 'VENDA SUCATA BATERIA' " +
+//                    "ORDER BY fechamento DESC";
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
-                    //"AND EQUIPAMENTO = 'BATERIA' " +
                     "AND TAREFA1 = 'VENDA SUCATA BATERIA' " +
+                    "AND STATUS = 'FECHADA' " +
                     "ORDER BY fechamento DESC";
+
         }
 
         if (busca.equals("faturamentoMonitor")) {
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "AND EQUIPAMENTO = 'MONITOR' " +
+//                    "ORDER BY fechamento DESC";
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                     "AND EQUIPAMENTO = 'MONITOR' " +
+                    "AND STATUS = 'FECHADA' " +
                     "ORDER BY fechamento DESC";
+
         }
 
         if (busca.equals("faturamentoManutencaoMonitor")) {
@@ -198,11 +263,18 @@ public class RelatorioService {
         }
 
         if (busca.equals("faturamentoOutroEquipamento")) {
+//            sql = "SELECT * FROM OS$ o " +
+//                    "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+//                    "AND EQUIPAMENTO NOT IN ('MONITOR', 'NOBREAK', 'BATERIA', 'SUCATA BATERIA', 'BATERIAS USADAS', " +
+//                    "'BANCO BATERIAS', 'BANCO DE BATERIAS', 'MODULO BATERIA', 'MODULO DE BATERIA') " +
+//                    "ORDER BY fechamento DESC";
             sql = "SELECT * FROM OS$ o " +
                     "WHERE fechamento BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
+                    "AND STATUS = 'FECHADA' " +
                     "AND EQUIPAMENTO NOT IN ('MONITOR', 'NOBREAK', 'BATERIA', 'SUCATA BATERIA', 'BATERIAS USADAS', " +
                     "'BANCO BATERIAS', 'BANCO DE BATERIAS', 'MODULO BATERIA', 'MODULO DE BATERIA') " +
                     "ORDER BY fechamento DESC";
+
 
         }
 

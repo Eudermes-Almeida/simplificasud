@@ -75,8 +75,6 @@ public class RelatorioResource {
                                     @QueryParam("dataFim") String dataFimString)
                                      {
         try {
-            // ... (Mantenha aqui a sua lógica de validação e formatação de datas) ...
-            // Verifica se as datas têm o comprimento correto
             if (dataInicioString.length() != 8 || dataFimString.length() != 8) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Formato de data inválido. Use o formato: ddMMyyyy.")
