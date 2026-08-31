@@ -28,7 +28,7 @@ public class FrequenciaSacramentalService {
                     .getResultList();
 
             if (frequenciasEntities.isEmpty()) {
-                throw new Exception("Nenhuma frequência sacramental encontrada");
+                throw new Exception("Nenhuma frequência Sacramental encontrada");
             }
 
             return frequenciasEntities.stream()
