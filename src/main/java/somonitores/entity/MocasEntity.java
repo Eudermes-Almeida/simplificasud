@@ -1,5 +1,6 @@
 package somonitores.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,5 +26,8 @@ public class MocasEntity {
     private String nome;
 
     private String idade;
+
+    @Column(name = "recomendacao_batisterio")
+    private String recomendacaoBatisterio;
 
 }

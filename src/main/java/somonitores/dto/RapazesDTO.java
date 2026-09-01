@@ -13,7 +13,8 @@ import lombok.*;
         "unidade",
         "nome",
         "idade",
-        "sacerdocio"
+        "sacerdocio",
+        "recomendacao_batisterio"
 })
 public class RapazesDTO {
 
@@ -31,5 +32,8 @@ public class RapazesDTO {
 
     @JsonbProperty("sacerdocio")
     private String sacerdocio;
+
+    @JsonbProperty("recomendacao_batisterio")
+    private String recomendacaoBatisterio;
 
 }

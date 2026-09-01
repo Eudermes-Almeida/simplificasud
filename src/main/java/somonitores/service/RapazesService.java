@@ -71,6 +71,7 @@ public class RapazesService {
                 .nome(entity.getNome())
                 .idade(entity.getIdade())
                 .sacerdocio(entity.getSacerdocio())
+                .recomendacaoBatisterio(entity.getRecomendacaoBatisterio())
                 .build();
     }
 }

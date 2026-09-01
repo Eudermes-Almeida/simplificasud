@@ -12,7 +12,8 @@ import lombok.*;
         "id",
         "unidade",
         "nome",
-        "idade"
+        "idade",
+        "recomendacao_batisterio"
 })
 public class MocasDTO {
 
@@ -27,5 +28,8 @@ public class MocasDTO {
 
     @JsonbProperty("idade")
     private String idade;
+
+    @JsonbProperty("recomendacao_batisterio")
+    private String recomendacaoBatisterio;
 
 }

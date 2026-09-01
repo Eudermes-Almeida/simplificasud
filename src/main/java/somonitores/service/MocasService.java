@@ -70,6 +70,7 @@ public class MocasService {
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
                 .idade(entity.getIdade())
+                .recomendacaoBatisterio(entity.getRecomendacaoBatisterio())
                 .build();
     }
 }
