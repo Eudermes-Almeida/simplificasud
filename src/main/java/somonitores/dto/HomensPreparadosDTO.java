@@ -13,7 +13,12 @@ import lombok.*;
         "unidade",
         "nome",
         "idade",
-        "ativo"
+        "data_batismo",
+        "tem_chamado",
+        "ministradora",
+        "ministrador",
+        "recomendacao",
+        "sacerdocio"
 })
 public class HomensPreparadosDTO {
 
@@ -29,7 +34,22 @@ public class HomensPreparadosDTO {
     @JsonbProperty("idade")
     private String idade;
 
-    @JsonbProperty("ativo")
-    private String ativo;
+    @JsonbProperty("data_batismo")
+    private String dataBatismo;
+
+    @JsonbProperty("tem_chamado")
+    private String temChamado;
+
+    @JsonbProperty("ministradora")
+    private String ministradora;
+
+    @JsonbProperty("ministrador")
+    private String ministrador;
+
+    @JsonbProperty("recomendacao")
+    private String recomendacao;
+
+    @JsonbProperty("sacerdocio")
+    private String sacerdocio;
 
 }

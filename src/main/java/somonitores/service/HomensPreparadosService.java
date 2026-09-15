@@ -70,7 +70,12 @@ public class HomensPreparadosService {
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
                 .idade(entity.getIdade())
-                .ativo(entity.getAtivo())
+                .dataBatismo(entity.getDataBatismo())
+                .temChamado(entity.getTemChamado())
+                .ministradora(entity.getMinistradora())
+                .ministrador(entity.getMinistrador())
+                .recomendacao(entity.getRecomendacao())
+                .sacerdocio(entity.getSacerdocio())
                 .build();
     }
 }
