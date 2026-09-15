@@ -14,7 +14,7 @@ import lombok.*;
         "nome",
         "sexo",
         "idade",
-        "ativo",
+        "data_batismo",
         "tem_chamado",
         "ministradora",
         "ministrador",
@@ -38,8 +38,8 @@ public class DetalhesConversosDTO {
     @JsonbProperty("idade")
     private String idade;
 
-    @JsonbProperty("ativo")
-    private String ativo;
+    @JsonbProperty("data_batismo")
+    private String dataBatismo;
 
     @JsonbProperty("tem_chamado")
     private String temChamado;

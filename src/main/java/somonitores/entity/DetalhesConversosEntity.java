@@ -29,7 +29,8 @@ public class DetalhesConversosEntity {
 
     private String idade;
 
-    private String ativo;
+    @Column(name = "data_batismo")
+    private String dataBatismo;
 
     @Column(name = "tem_chamado")
     private String temChamado;

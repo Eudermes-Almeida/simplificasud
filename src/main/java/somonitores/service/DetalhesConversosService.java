@@ -71,7 +71,7 @@ public class DetalhesConversosService {
                 .nome(entity.getNome())
                 .sexo(entity.getSexo())
                 .idade(entity.getIdade())
-                .ativo(entity.getAtivo())
+                .dataBatismo(entity.getDataBatismo())
                 .temChamado(entity.getTemChamado())
                 .ministradora(entity.getMinistradora())
                 .ministrador(entity.getMinistrador())
