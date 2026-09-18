@@ -19,9 +19,6 @@ public class DetalhesConversosService {
     @Inject
     EntityManager entityManager;
 
-    @Inject
-    ContextoAutenticacao contextoAutenticacao;
-
     @Transactional
     public List<DetalhesConversosDTO> buscaTodosDetalhesConversos() throws Exception {
         try {
@@ -67,8 +64,13 @@ public class DetalhesConversosService {
                 .collect(Collectors.toList());
     }
 
+    // Status de recomendação vem pra todo mundo, inclusive nível B (Conselho/Sumo
+    // Conselho/Professores) - só o botão que filtra o detalhamento por esse status é que
+    // não é renderizado pra esse nível (decisão revisada 2026-09-18 após validação com os
+    // líderes: aba Resumo precisa mostrar todos os cards, só não pode "detalhar" pra essa
+    // informação sensível). Ver memória project-raiox-matriz-acesso-ab-design.
     private DetalhesConversosDTO mapToDTO(DetalhesConversosEntity entity) {
-        DetalhesConversosDTO.DetalhesConversosDTOBuilder builder = DetalhesConversosDTO.builder()
+        return DetalhesConversosDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
@@ -78,15 +80,8 @@ public class DetalhesConversosService {
                 .temChamado(entity.getTemChamado())
                 .ministradora(entity.getMinistradora())
                 .ministrador(entity.getMinistrador())
-                .sacerdocio(entity.getSacerdocio());
-
-        // Nível B (Conselho/Sumo Conselho/Professores) não vê status de recomendação no
-        // detalhamento - ver memória project-raiox-matriz-acesso-ab-design. Campo omitido
-        // aqui mesmo, no backend, nunca sai desse jeito pro frontend.
-        if (!contextoAutenticacao.isNivelB()) {
-            builder.recomendacao(entity.getRecomendacao());
-        }
-
-        return builder.build();
+                .recomendacao(entity.getRecomendacao())
+                .sacerdocio(entity.getSacerdocio())
+                .build();
     }
 }

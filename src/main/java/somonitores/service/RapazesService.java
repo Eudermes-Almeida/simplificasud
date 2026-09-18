@@ -19,9 +19,6 @@ public class RapazesService {
     @Inject
     EntityManager entityManager;
 
-    @Inject
-    ContextoAutenticacao contextoAutenticacao;
-
     @Transactional
     public List<RapazesDTO> buscaTodosRapazes() throws Exception {
         try {
@@ -67,20 +64,17 @@ public class RapazesService {
                 .collect(Collectors.toList());
     }
 
+    // Status de recomendação vem pra todo mundo - a restrição pro nível B (esconder o
+    // campo por pessoa na aba Detalhamento) é só no frontend agora (ver memória
+    // project-raiox-matriz-acesso-ab-design, decisão revisada 2026-09-18).
     private RapazesDTO mapToDTO(RapazesEntity entity) {
-        RapazesDTO.RapazesDTOBuilder builder = RapazesDTO.builder()
+        return RapazesDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
                 .idade(entity.getIdade())
-                .sacerdocio(entity.getSacerdocio());
-
-        // Nível B não vê status de recomendação no detalhamento - ver memória
-        // project-raiox-matriz-acesso-ab-design (card "Jovens e Crianças").
-        if (!contextoAutenticacao.isNivelB()) {
-            builder.recomendacaoBatisterio(entity.getRecomendacaoBatisterio());
-        }
-
-        return builder.build();
+                .sacerdocio(entity.getSacerdocio())
+                .recomendacaoBatisterio(entity.getRecomendacaoBatisterio())
+                .build();
     }
 }

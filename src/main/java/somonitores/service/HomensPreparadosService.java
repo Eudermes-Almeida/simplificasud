@@ -19,9 +19,6 @@ public class HomensPreparadosService {
     @Inject
     EntityManager entityManager;
 
-    @Inject
-    ContextoAutenticacao contextoAutenticacao;
-
     @Transactional
     public List<HomensPreparadosDTO> buscaTodosHomensPreparados() throws Exception {
         try {
@@ -67,8 +64,11 @@ public class HomensPreparadosService {
                 .collect(Collectors.toList());
     }
 
+    // Status de recomendação vem pra todo mundo - só o botão que filtra o detalhamento por
+    // esse status não é renderizado pro nível B (ver memória
+    // project-raiox-matriz-acesso-ab-design, decisão revisada 2026-09-18).
     private HomensPreparadosDTO mapToDTO(HomensPreparadosEntity entity) {
-        HomensPreparadosDTO.HomensPreparadosDTOBuilder builder = HomensPreparadosDTO.builder()
+        return HomensPreparadosDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
@@ -77,14 +77,8 @@ public class HomensPreparadosService {
                 .temChamado(entity.getTemChamado())
                 .ministradora(entity.getMinistradora())
                 .ministrador(entity.getMinistrador())
-                .sacerdocio(entity.getSacerdocio());
-
-        // Nível B não vê status de recomendação no detalhamento - ver memória
-        // project-raiox-matriz-acesso-ab-design.
-        if (!contextoAutenticacao.isNivelB()) {
-            builder.recomendacao(entity.getRecomendacao());
-        }
-
-        return builder.build();
+                .recomendacao(entity.getRecomendacao())
+                .sacerdocio(entity.getSacerdocio())
+                .build();
     }
 }

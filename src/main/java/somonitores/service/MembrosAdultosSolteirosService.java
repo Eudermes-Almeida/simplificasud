@@ -19,9 +19,6 @@ public class MembrosAdultosSolteirosService {
     @Inject
     EntityManager entityManager;
 
-    @Inject
-    ContextoAutenticacao contextoAutenticacao;
-
     @Transactional
     public List<MembrosAdultosSolteirosDTO> buscaTodosMembrosAdultosSolteiros() throws Exception {
         try {
@@ -67,23 +64,21 @@ public class MembrosAdultosSolteirosService {
                 .collect(Collectors.toList());
     }
 
+    // Status de recomendação vem pra todo mundo (usado nos cards de KPI da aba Resumo,
+    // inclusive pro nível B) - só o botão que filtra o detalhamento por esse status não é
+    // renderizado pro nível B, tratado no frontend (ver memória
+    // project-raiox-matriz-acesso-ab-design, decisão revisada 2026-09-18).
     private MembrosAdultosSolteirosDTO mapToDTO(MembrosAdultosSolteirosEntity entity) {
-        MembrosAdultosSolteirosDTO.MembrosAdultosSolteirosDTOBuilder builder = MembrosAdultosSolteirosDTO.builder()
+        return MembrosAdultosSolteirosDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
                 .sexo(entity.getSexo())
                 .idade(entity.getIdade())
                 .estadocivil(entity.getEstadocivil())
+                .recomendacaotemplo(entity.getRecomendacaotemplo())
                 .paismissao(entity.getPaismissao())
-                .chamados(entity.getChamados());
-
-        // Nível B não vê status de recomendação no detalhamento nem pode filtrar por ela -
-        // ver memória project-raiox-matriz-acesso-ab-design.
-        if (!contextoAutenticacao.isNivelB()) {
-            builder.recomendacaotemplo(entity.getRecomendacaotemplo());
-        }
-
-        return builder.build();
+                .chamados(entity.getChamados())
+                .build();
     }
 }

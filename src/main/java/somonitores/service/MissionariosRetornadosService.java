@@ -19,9 +19,6 @@ public class MissionariosRetornadosService {
     @Inject
     EntityManager entityManager;
 
-    @Inject
-    ContextoAutenticacao contextoAutenticacao;
-
     @Transactional
     public List<MissionariosRetornadosDTO> buscaTodosMissionariosRetornados() throws Exception {
         try {
@@ -67,8 +64,12 @@ public class MissionariosRetornadosService {
                 .collect(Collectors.toList());
     }
 
+    // Status de recomendação vem pra todo mundo (usado nos cards de KPI da aba Resumo,
+    // inclusive pro nível B) - só o botão que filtra o detalhamento por esse status não é
+    // renderizado pro nível B, tratado no frontend (ver memória
+    // project-raiox-matriz-acesso-ab-design, decisão revisada 2026-09-18).
     private MissionariosRetornadosDTO mapToDTO(MissionariosRetornadosEntity entity) {
-        MissionariosRetornadosDTO.MissionariosRetornadosDTOBuilder builder = MissionariosRetornadosDTO.builder()
+        return MissionariosRetornadosDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
@@ -77,16 +78,9 @@ public class MissionariosRetornadosService {
                 .solteiro(entity.getSolteiro())
                 .selado(entity.getSelado())
                 .matriculadoinstituto(entity.getMatriculadoinstituto())
+                .recomendacaotemplo(entity.getRecomendacaotemplo())
                 .chamado(entity.getChamado())
-                .paismissao(entity.getPaismissao());
-
-        // Nível B não vê status de recomendação no detalhamento nem pode filtrar por ela -
-        // omitir o campo aqui já tira a informação e desativa o filtro no frontend, já que
-        // não sobra dado nenhum pra filtrar. Ver memória project-raiox-matriz-acesso-ab-design.
-        if (!contextoAutenticacao.isNivelB()) {
-            builder.recomendacaotemplo(entity.getRecomendacaotemplo());
-        }
-
-        return builder.build();
+                .paismissao(entity.getPaismissao())
+                .build();
     }
 }

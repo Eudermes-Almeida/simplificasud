@@ -19,9 +19,6 @@ public class MocasService {
     @Inject
     EntityManager entityManager;
 
-    @Inject
-    ContextoAutenticacao contextoAutenticacao;
-
     @Transactional
     public List<MocasDTO> buscaTodasMocas() throws Exception {
         try {
@@ -67,19 +64,16 @@ public class MocasService {
                 .collect(Collectors.toList());
     }
 
+    // Status de recomendação vem pra todo mundo - a restrição pro nível B (esconder o
+    // campo por pessoa na aba Detalhamento) é só no frontend agora (ver memória
+    // project-raiox-matriz-acesso-ab-design, decisão revisada 2026-09-18).
     private MocasDTO mapToDTO(MocasEntity entity) {
-        MocasDTO.MocasDTOBuilder builder = MocasDTO.builder()
+        return MocasDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
-                .idade(entity.getIdade());
-
-        // Nível B não vê status de recomendação no detalhamento - ver memória
-        // project-raiox-matriz-acesso-ab-design (card "Jovens e Crianças").
-        if (!contextoAutenticacao.isNivelB()) {
-            builder.recomendacaoBatisterio(entity.getRecomendacaoBatisterio());
-        }
-
-        return builder.build();
+                .idade(entity.getIdade())
+                .recomendacaoBatisterio(entity.getRecomendacaoBatisterio())
+                .build();
     }
 }
