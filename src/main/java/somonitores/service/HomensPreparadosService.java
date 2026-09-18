@@ -19,6 +19,9 @@ public class HomensPreparadosService {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    ContextoAutenticacao contextoAutenticacao;
+
     @Transactional
     public List<HomensPreparadosDTO> buscaTodosHomensPreparados() throws Exception {
         try {
@@ -65,7 +68,7 @@ public class HomensPreparadosService {
     }
 
     private HomensPreparadosDTO mapToDTO(HomensPreparadosEntity entity) {
-        return HomensPreparadosDTO.builder()
+        HomensPreparadosDTO.HomensPreparadosDTOBuilder builder = HomensPreparadosDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
@@ -74,8 +77,14 @@ public class HomensPreparadosService {
                 .temChamado(entity.getTemChamado())
                 .ministradora(entity.getMinistradora())
                 .ministrador(entity.getMinistrador())
-                .recomendacao(entity.getRecomendacao())
-                .sacerdocio(entity.getSacerdocio())
-                .build();
+                .sacerdocio(entity.getSacerdocio());
+
+        // Nível B não vê status de recomendação no detalhamento - ver memória
+        // project-raiox-matriz-acesso-ab-design.
+        if (!contextoAutenticacao.isNivelB()) {
+            builder.recomendacao(entity.getRecomendacao());
+        }
+
+        return builder.build();
     }
 }

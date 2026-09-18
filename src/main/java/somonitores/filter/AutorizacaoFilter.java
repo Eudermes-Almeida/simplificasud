@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.Provider;
 import somonitores.entity.LideresEntity;
+import somonitores.service.ContextoAutenticacao;
 import somonitores.service.SessaoService;
 
 import java.util.Optional;
@@ -25,7 +26,11 @@ import java.util.Set;
 public class AutorizacaoFilter implements ContainerRequestFilter {
 
     private static final String HEADER_TOKEN = "X-Auth-Token";
-    private static final String ESCOPO_ESTACA = "ESTACA";
+    // Prefixo, não igualdade exata: desde 2026-09-18 escopo guarda Estaca-A/Estaca-B/
+    // Ala-A/Ala-B (ver memória project-raiox-matriz-acesso-ab-design), então "Estaca"
+    // sozinho não aparece mais pra líder nenhum. O sufixo A/B não influencia esta
+    // checagem de unidade -- só Estaca vs Ala importa aqui.
+    private static final String ESCOPO_ESTACA_PREFIXO = "ESTACA";
 
     // Rotas que não exigem sessão: login em si, e o fluxo de primeiro acesso completo
     // (roda ANTES de existir qualquer token), além da listagem segura de líderes
@@ -40,6 +45,9 @@ public class AutorizacaoFilter implements ContainerRequestFilter {
 
     @Inject
     SessaoService sessaoService;
+
+    @Inject
+    ContextoAutenticacao contextoAutenticacao;
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
@@ -65,10 +73,12 @@ public class AutorizacaoFilter implements ContainerRequestFilter {
         }
 
         LideresEntity lider = liderOpt.get();
+        contextoAutenticacao.setLiderAtual(lider);
         String unidadeSolicitada = uriInfo.getQueryParameters().getFirst("unidade");
 
         if (unidadeSolicitada != null) {
-            boolean escopoTotal = ESCOPO_ESTACA.equalsIgnoreCase(lider.getEscopo());
+            boolean escopoTotal = lider.getEscopo() != null
+                    && lider.getEscopo().trim().toUpperCase().startsWith(ESCOPO_ESTACA_PREFIXO);
             boolean mesmaUnidade = lider.getUnidade() != null
                     && lider.getUnidade().equalsIgnoreCase(unidadeSolicitada.trim());
 

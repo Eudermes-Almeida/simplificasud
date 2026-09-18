@@ -19,6 +19,9 @@ public class MembrosAdultosSolteirosService {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    ContextoAutenticacao contextoAutenticacao;
+
     @Transactional
     public List<MembrosAdultosSolteirosDTO> buscaTodosMembrosAdultosSolteiros() throws Exception {
         try {
@@ -65,16 +68,22 @@ public class MembrosAdultosSolteirosService {
     }
 
     private MembrosAdultosSolteirosDTO mapToDTO(MembrosAdultosSolteirosEntity entity) {
-        return MembrosAdultosSolteirosDTO.builder()
+        MembrosAdultosSolteirosDTO.MembrosAdultosSolteirosDTOBuilder builder = MembrosAdultosSolteirosDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
                 .sexo(entity.getSexo())
                 .idade(entity.getIdade())
                 .estadocivil(entity.getEstadocivil())
-                .recomendacaotemplo(entity.getRecomendacaotemplo())
                 .paismissao(entity.getPaismissao())
-                .chamados(entity.getChamados())
-                .build();
+                .chamados(entity.getChamados());
+
+        // Nível B não vê status de recomendação no detalhamento nem pode filtrar por ela -
+        // ver memória project-raiox-matriz-acesso-ab-design.
+        if (!contextoAutenticacao.isNivelB()) {
+            builder.recomendacaotemplo(entity.getRecomendacaotemplo());
+        }
+
+        return builder.build();
     }
 }

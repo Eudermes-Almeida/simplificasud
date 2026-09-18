@@ -19,6 +19,9 @@ public class MocasService {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    ContextoAutenticacao contextoAutenticacao;
+
     @Transactional
     public List<MocasDTO> buscaTodasMocas() throws Exception {
         try {
@@ -65,12 +68,18 @@ public class MocasService {
     }
 
     private MocasDTO mapToDTO(MocasEntity entity) {
-        return MocasDTO.builder()
+        MocasDTO.MocasDTOBuilder builder = MocasDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
-                .idade(entity.getIdade())
-                .recomendacaoBatisterio(entity.getRecomendacaoBatisterio())
-                .build();
+                .idade(entity.getIdade());
+
+        // Nível B não vê status de recomendação no detalhamento - ver memória
+        // project-raiox-matriz-acesso-ab-design (card "Jovens e Crianças").
+        if (!contextoAutenticacao.isNivelB()) {
+            builder.recomendacaoBatisterio(entity.getRecomendacaoBatisterio());
+        }
+
+        return builder.build();
     }
 }

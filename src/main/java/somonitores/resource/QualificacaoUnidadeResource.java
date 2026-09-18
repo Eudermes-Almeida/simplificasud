@@ -14,6 +14,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import somonitores.dto.QualificacaoUnidadeDTO;
+import somonitores.service.ContextoAutenticacao;
 import somonitores.service.QualificacaoUnidadeService;
 
 import java.util.List;
@@ -24,12 +25,16 @@ public class QualificacaoUnidadeResource {
     @Inject
     QualificacaoUnidadeService qualificacaoUnidadeService;
 
+    @Inject
+    ContextoAutenticacao contextoAutenticacao;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Tag(name = "Busca Qualificação de Unidade", description = "Busca Qualificação de Unidade por unidade")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "Qualificações de unidade encontradas (pode ser lista vazia se a unidade não tiver registros)", content = @Content(schema = @Schema(implementation = QualificacaoUnidadeDTO.class))),
             @APIResponse(responseCode = "400", description = "Parâmetro 'unidade' não informado", content = @Content(schema = @Schema(implementation = QualificacaoUnidadeDTO.class))),
+            @APIResponse(responseCode = "403", description = "Nível de acesso do líder não vê este card (ver matriz de acesso)", content = @Content(schema = @Schema(implementation = QualificacaoUnidadeDTO.class))),
             @APIResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = QualificacaoUnidadeDTO.class))),
     })
     @Operation(summary = "Busca Qualificação de Unidade por unidade", description = "Busca a qualificação de uma unidade específica. Informar 'Estaca Betim' retorna os dados de todas as unidades, já que a estaca é a soma de todas as alas/ramos.")
@@ -38,6 +43,15 @@ public class QualificacaoUnidadeResource {
             if (unidade == null || unidade.trim().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("O parâmetro 'unidade' é obrigatório")
+                        .build();
+            }
+
+            // Card inteiro não existe pro nível B (Conselho/Professores) - ver memória
+            // project-raiox-matriz-acesso-ab-design. 403 em vez de lista vazia pra distinguir
+            // "sem permissão" de "sem dados" quando o frontend for tratar isso.
+            if (contextoAutenticacao.isNivelB()) {
+                return Response.status(Response.Status.FORBIDDEN)
+                        .entity("Seu nível de acesso não inclui este card.")
                         .build();
             }
 

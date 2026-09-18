@@ -19,6 +19,9 @@ public class DetalhesConversosService {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    ContextoAutenticacao contextoAutenticacao;
+
     @Transactional
     public List<DetalhesConversosDTO> buscaTodosDetalhesConversos() throws Exception {
         try {
@@ -65,7 +68,7 @@ public class DetalhesConversosService {
     }
 
     private DetalhesConversosDTO mapToDTO(DetalhesConversosEntity entity) {
-        return DetalhesConversosDTO.builder()
+        DetalhesConversosDTO.DetalhesConversosDTOBuilder builder = DetalhesConversosDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
@@ -75,8 +78,15 @@ public class DetalhesConversosService {
                 .temChamado(entity.getTemChamado())
                 .ministradora(entity.getMinistradora())
                 .ministrador(entity.getMinistrador())
-                .recomendacao(entity.getRecomendacao())
-                .sacerdocio(entity.getSacerdocio())
-                .build();
+                .sacerdocio(entity.getSacerdocio());
+
+        // Nível B (Conselho/Sumo Conselho/Professores) não vê status de recomendação no
+        // detalhamento - ver memória project-raiox-matriz-acesso-ab-design. Campo omitido
+        // aqui mesmo, no backend, nunca sai desse jeito pro frontend.
+        if (!contextoAutenticacao.isNivelB()) {
+            builder.recomendacao(entity.getRecomendacao());
+        }
+
+        return builder.build();
     }
 }

@@ -19,6 +19,9 @@ public class RapazesService {
     @Inject
     EntityManager entityManager;
 
+    @Inject
+    ContextoAutenticacao contextoAutenticacao;
+
     @Transactional
     public List<RapazesDTO> buscaTodosRapazes() throws Exception {
         try {
@@ -65,13 +68,19 @@ public class RapazesService {
     }
 
     private RapazesDTO mapToDTO(RapazesEntity entity) {
-        return RapazesDTO.builder()
+        RapazesDTO.RapazesDTOBuilder builder = RapazesDTO.builder()
                 .id(entity.getId())
                 .unidade(entity.getUnidade())
                 .nome(entity.getNome())
                 .idade(entity.getIdade())
-                .sacerdocio(entity.getSacerdocio())
-                .recomendacaoBatisterio(entity.getRecomendacaoBatisterio())
-                .build();
+                .sacerdocio(entity.getSacerdocio());
+
+        // Nível B não vê status de recomendação no detalhamento - ver memória
+        // project-raiox-matriz-acesso-ab-design (card "Jovens e Crianças").
+        if (!contextoAutenticacao.isNivelB()) {
+            builder.recomendacaoBatisterio(entity.getRecomendacaoBatisterio());
+        }
+
+        return builder.build();
     }
 }
