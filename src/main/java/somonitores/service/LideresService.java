@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import somonitores.dto.LideresDTO;
+import somonitores.dto.LiderAdminDTO;
 import somonitores.entity.LideresEntity;
 
 import java.time.LocalDate;
@@ -121,6 +122,90 @@ public class LideresService {
         LideresEntity entity = entityManager.find(LideresEntity.class, id);
         entity.setLogin(login.trim());
         entity.setSenhaHash(BcryptUtil.bcryptHash(senhaPlana));
+    }
+
+    // --- CRUD administrativo de perfis (tela restrita ao escopo Master) ---
+    // Só aqui a API grava nome/registromembro/unidade/escopo/nascimento/chamado -- os
+    // outros pontos de escrita (cadastrarCredenciais acima) só tocam login/senha_hash.
+
+    @Transactional
+    public Optional<LiderAdminDTO> buscaAdminPorRegistroMembro(String registromembro) {
+        return entityManager.createQuery(
+                        "SELECT l FROM LideresEntity l WHERE l.registromembro = :registromembro",
+                        LideresEntity.class)
+                .setParameter("registromembro", registromembro.trim())
+                .getResultList()
+                .stream()
+                .findFirst()
+                .map(this::mapToAdminDTO);
+    }
+
+    // Usado na criação (idAtual=null) e na edição (idAtual = id do próprio registro, que
+    // não deve contar como conflito consigo mesmo).
+    @Transactional
+    public boolean registroMembroEmUsoPorOutro(String registromembro, Long idAtual) {
+        String jpql = "SELECT COUNT(l) FROM LideresEntity l WHERE l.registromembro = :registromembro"
+                + (idAtual != null ? " AND l.id <> :idAtual" : "");
+        var query = entityManager.createQuery(jpql, Long.class)
+                .setParameter("registromembro", registromembro.trim());
+        if (idAtual != null) {
+            query.setParameter("idAtual", idAtual);
+        }
+        return query.getSingleResult() > 0;
+    }
+
+    @Transactional
+    public LiderAdminDTO criarLider(LiderAdminDTO dto) {
+        LideresEntity entity = LideresEntity.builder()
+                .nome(dto.getNome().trim())
+                .registromembro(dto.getRegistromembro().trim())
+                .unidade(dto.getUnidade().trim())
+                .escopo(dto.getEscopo().trim())
+                .nascimento(dto.getNascimento())
+                .chamado(dto.getChamado())
+                .build();
+        entityManager.persist(entity);
+        return mapToAdminDTO(entity);
+    }
+
+    @Transactional
+    public Optional<LiderAdminDTO> atualizarLider(Long id, LiderAdminDTO dto) {
+        LideresEntity entity = entityManager.find(LideresEntity.class, id);
+        if (entity == null) {
+            return Optional.empty();
+        }
+        entity.setNome(dto.getNome().trim());
+        entity.setRegistromembro(dto.getRegistromembro().trim());
+        entity.setUnidade(dto.getUnidade().trim());
+        entity.setEscopo(dto.getEscopo().trim());
+        entity.setNascimento(dto.getNascimento());
+        entity.setChamado(dto.getChamado());
+        return Optional.of(mapToAdminDTO(entity));
+    }
+
+    // "Remover acesso": não apaga a linha (mantém histórico/nome/registromembro), só
+    // esvazia o escopo. A coluna é NOT NULL, então usa string vazia como sentinela de
+    // "sem acesso" -- AuthResource.login rejeita login quando o escopo está em branco.
+    @Transactional
+    public boolean revogarAcesso(Long id) {
+        LideresEntity entity = entityManager.find(LideresEntity.class, id);
+        if (entity == null) {
+            return false;
+        }
+        entity.setEscopo("");
+        return true;
+    }
+
+    private LiderAdminDTO mapToAdminDTO(LideresEntity entity) {
+        return LiderAdminDTO.builder()
+                .id(entity.getId())
+                .nome(entity.getNome())
+                .registromembro(entity.getRegistromembro())
+                .unidade(entity.getUnidade())
+                .escopo(entity.getEscopo())
+                .nascimento(entity.getNascimento())
+                .chamado(entity.getChamado())
+                .build();
     }
 
     private boolean terminaCom(String registromembro, String ultimosQuatro) {

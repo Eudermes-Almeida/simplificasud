@@ -32,6 +32,12 @@ public class AutorizacaoFilter implements ContainerRequestFilter {
     // checagem de unidade -- só Estaca vs Ala importa aqui.
     private static final String ESCOPO_ESTACA_PREFIXO = "ESTACA";
 
+    // Perfil Master (ver memória project-raiox-admin-perfis): não é um líder normal, só
+    // administra os perfis dos demais. Por isso o acesso é travado nos dois sentidos --
+    // só Master entra em /lideres/admin/**, e Master não entra em mais nada.
+    private static final String ESCOPO_MASTER = "MASTER";
+    private static final String CAMINHO_ADMIN_PREFIXO = "/lideres/admin";
+
     // Rotas que não exigem sessão: login em si, e o fluxo de primeiro acesso completo
     // (roda ANTES de existir qualquer token), além da listagem segura de líderes
     // (LideresDTO já não expõe nada sensível, ver memória).
@@ -74,6 +80,19 @@ public class AutorizacaoFilter implements ContainerRequestFilter {
 
         LideresEntity lider = liderOpt.get();
         contextoAutenticacao.setLiderAtual(lider);
+
+        boolean ehMaster = lider.getEscopo() != null && lider.getEscopo().trim().toUpperCase().equals(ESCOPO_MASTER);
+        boolean rotaAdmin = caminho.startsWith(CAMINHO_ADMIN_PREFIXO);
+        if (ehMaster != rotaAdmin) {
+            abortar(requestContext, Response.Status.FORBIDDEN, "Acesso não permitido.");
+            return;
+        }
+        if (rotaAdmin) {
+            // Já confirmado acima que só Master chega aqui -- a checagem de "unidade" por
+            // escopo Ala/Estaca abaixo não se aplica a essas rotas.
+            return;
+        }
+
         String unidadeSolicitada = uriInfo.getQueryParameters().getFirst("unidade");
 
         if (unidadeSolicitada != null) {

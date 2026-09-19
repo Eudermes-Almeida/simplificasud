@@ -72,6 +72,15 @@ public class AuthResource {
                         .build();
             }
 
+            // Escopo em branco = acesso revogado pelo perfil Master (ver memória
+            // project-raiox-admin-perfis) -- login/senha continuam válidos, mas a pessoa não
+            // deve mais conseguir entrar. Mesma mensagem genérica de sempre, não revela o motivo.
+            if (lider.getEscopo() == null || lider.getEscopo().isBlank()) {
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("Login ou senha inválidos.")
+                        .build();
+            }
+
             String token = sessaoService.criarSessao(lider.getId());
 
             LoginResponseDTO resposta = LoginResponseDTO.builder()
